@@ -1,14 +1,16 @@
-# My Backtest Strategies v2: A Backtrader Framework
+# Quantitative Trading Strategies Framework
 
-A robust and extensible framework for developing, testing, and analyzing quantitative trading strategies using the Backtrader library. This project provides a structured environment for quickly implementing new strategies, running comprehensive backtests, and generating detailed performance reports and visualizations.
+A modular, event-driven backtesting engine for financial trading strategies. This framework provides clear separation between data handling, strategy logic, execution simulation, and performance analytics.
 
-## ✨ Features
+Designed for quantitative research, allowing for rapid testing of technical signals (SMA, EMA, RSI) and risk metrics.
 
-* **Modular Strategy Development:** Easily define and integrate new trading strategies.
-* **Automated Backtesting:** Run multiple strategies against historical data with configurable parameters.
-* **Comprehensive Performance Analysis:** Utilize Backtrader's built-in analyzers for key metrics (Returns, Sharpe Ratio, Drawdown, SQN, etc.).
-* **Detailed Trade Logging:** Custom observer to capture and export individual trade details (entry/exit dates, prices, PnL, etc.).
-* **`pytest`-Based Testing:** Ensure the reliability and correctness of your strategies and core components.
+## 🚀 Features
+
+* **Event-Driven Architecture:** Simulates realistic execution with `DataHandler`, `Strategy`, and `Portfolio` classes.
+* **Vectorized Indicators:** Optimized SMA, EMA, MACD, and RSI calculations using Pandas/Numpy.
+* **Risk Management:** Built-in calculation of **Value at Risk (VaR)**, Sharpe Ratio, and Maximum Drawdown.
+* **Realistic Execution:** Execution handler simulates slippage and commission costs (0.1% default).
+* **CI/CD Integration:** GitHub Actions enabled for automated testing.
 
 ## 📂 Project Structure
 
@@ -44,7 +46,7 @@ Follow these steps to set up the project and run your first backtest.
 
 1.  **Clone the repository:**
 ```bash
-git clone https://github.com/eddiesung111/my-backtest-strategies-v2.git
+git clone https://github.com/eddiesung111/quantitative-trading-strategies.git
 cd my-backtest-strategies-v2
 ```
 
@@ -111,9 +113,9 @@ pytest
 
 For more in-depth information, please refer to the `docs/` directory:
 
-* [**Backtrader Setup**](https://github.com/eddiesung111/my-backtest-strategies-v2/blob/main/docs/backtrader_setup.md): Detailed instructions for setting up your development environment.
-* [**Strategies**](https://github.com/eddiesung111/my-backtest-strategies-v2/blob/main/docs/strategies.md): Comprehensive details on each implemented trading strategy.
+* [**Backtrader Setup**](https://github.com/eddiesung111/quantitative-trading-strategies/blob/main/docs/backtrader_setup.md): Detailed instructions for setting up your development environment.
+* [**Strategies**](https://github.com/eddiesung111/quantitative-trading-strategies/blob/main/docs/strategies.md): Comprehensive details on each implemented trading strategy.
 
 ## 📄 License
 
-This project is licensed under the [MIT License](https://github.com/eddiesung111/my-backtest-strategies-v2/blob/main/LICENSE).
+This project is licensed under the [MIT License](https://github.com/eddiesung111/quantitative-trading-strategies/blob/main/LICENSE).
