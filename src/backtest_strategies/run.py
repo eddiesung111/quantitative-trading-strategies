@@ -1,26 +1,26 @@
-#!/usr/bin/env python3
 import sys
+import os
 import argparse
 import backtrader as bt
 import yfinance as yf
 import matplotlib.pyplot as plt # Added for plotting
 
-# Strategy imports - IMPORTANT: USE ABSOLUTE IMPORTS
 from src.backtest_strategies.strategies.buy_hold import BuyHold
 from src.backtest_strategies.strategies.sma_golden_cross import SMAGoldenCross
 from src.backtest_strategies.strategies.ema_golden_cross import EMAGoldenCross
 from src.backtest_strategies.strategies.macd_strategy import MACDStrategy
 from src.backtest_strategies.strategies.rsi_strategy import RSIStrategy
 
-STRATEGIES = { # Changed variable name to avoid conflict with `strategies` dictionary
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
+
+STRATEGIES = {
     "BuyHold": BuyHold,
     "EMAGoldenCross": EMAGoldenCross,
     "MACDStrategy": MACDStrategy,
     "RSIStrategy": RSIStrategy,
-    "SMAGoldenCros": SMAGoldenCross,
+    "SMAGoldenCross": SMAGoldenCross,
 }
 
-# IMPORTANT: Wrap your main logic in a function
 def main(argv=None):
     argv = argv or sys.argv[1:]
     parser = argparse.ArgumentParser(
@@ -49,7 +49,7 @@ def main(argv=None):
     cerebro.addanalyzer(bt.analyzers.TradeAnalyzer, _name='trades')
 
     # Run strategy
-    cerebro.addstrategy(STRATEGIES[args.strategy]) # Use STRATEGIES and args.strategy
+    cerebro.addstrategy(STRATEGIES[args.strategy])
     results = cerebro.run()
     strat = results[0]
 
@@ -60,14 +60,14 @@ def main(argv=None):
     maxdd = strat.analyzers.getbyname('drawdown').get_analysis().get('max',{}).get('drawdown')
     total_trades = strat.analyzers.getbyname('trades').get_analysis().get('total',{}).get('total',0)
 
-    # You had different print statements and analysis. I'm using the ones from the first run.py you shared, as they seem more complete.
+    # Print metrics
     print(f"Total Return: {returns.get('rtot')}")
     print(f"Normalized Return: {rnorm}")
     print(f"Sharpe Ratio: {sharpe}")
     print(f"Max Drawdown: {maxdd}")
     print(f"Total Trades: {total_trades}")
 
-    # Plotting (add the save-to-file logic from previous suggestion if interactive still fails)
+    # Plot results
     try:
         cerebro.plot()
     except Exception as e:
