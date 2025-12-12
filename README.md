@@ -47,7 +47,7 @@ Follow these steps to set up the project and run your first backtest.
 1.  **Clone the repository:**
 ```bash
 git clone https://github.com/eddiesung111/quantitative-trading-strategies.git
-cd my-backtest-strategies-v2
+cd quantitative-trading-strategies
 ```
 
 2.  **Create and activate a virtual environment:**
