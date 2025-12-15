@@ -23,14 +23,13 @@ Designed for quantitative research, allowing for rapid testing of technical sign
 │   └── strategies.md                   # Detailed descriptions of all trading strategies
 ├── src/                                # Source code for strategies and core logic
 │   └── backtest_strategies/
-│       ├── strategies/                 # Individual trading strategy implementations
-│       │   ├── mean_reversion.py       # Bollinger Band/Z-score strategies
-│       │   ├── donchain.py             # Donchian Channel Breakout
-│       │   └── ... (SMA, EMA, etc.)
+│       ├── strategies/                 # Strategy logic (SMA, RSI, Pairs, etc.)
 │       ├── run_pairs.py                # Runner for Pairs Trading backtests
-│       ├── __init__.py
-│       ├── __main__.py
-│       └── run.py                      # Main runner for single-asset strategies
+│       ├── run.py                      # Main runner for single-asset strategies
+│       └── ...
+│   └── vectorized_strategies/          # 🐇 VECTORIZED ENGINE (Pandas/NumPy)
+│       ├── sma_strategy.py             # Strategies (included sma, ema, mean_reversion, donchain channel)
+│       └── ...
 ├── tests/                              # Unit and integration tests
 ├── .gitignore                       
 ├── LICENSE
@@ -80,46 +79,51 @@ pip install -r requirements.txt
 ## 🧠 Strategies Implemented
 This framework includes the following trading strategies. For detailed logic and parameters, refer to [docs/strategies.md](https://github.com/eddiesung111/quantitative-trading-strategies/blob/main/docs/strategies.md).
 
-### Single-Asset Strategies
+### 🐢 Event-Driven Strategies (Backtrader)
+*Located in `src/backtest_strategies/`*
 | Strategy | Description |
 | :--- | :--- |
-| **BuyHold** | A baseline strategy that simply buys and holds the asset for the entire period. |
-| **SMAGoldenCross** | Trend-following strategy based on the crossover of two Simple Moving Averages. |
-| **EMAGoldenCross** | Trend-following strategy based on the crossover of two Exponential Moving Averages. |
-| **MACDStrategy** | Utilizes Moving Average Convergence Divergence for momentum and trend signals. |
-| **RSIStrategy** | Employs Relative Strength Index to identify overbought/oversold conditions. |
-| **MeanReversion** | Captures price reversions to the mean (e.g., Bollinger Bands). |
-| **Donchain** | Breakout strategy using Donchian Channels to capture volatility expansion. |
+| **BuyHold** | Benchmark strategy; buy once and hold. |
+| **SMAGoldenCross** | Golden Cross using Simple Moving Averages. |
+| **EMAGoldenCross** | Golden Cross using Exponential Moving Averages. |
+| **MACDStrategy** | Momentum trading using MACD histogram/signal crossovers. |
+| **RSIStrategy** | Overbought/Oversold mean reversion using RSI. |
+| **PairsTrading** | Statistical Arbitrage trading the spread between cointegrated assets. |
 
-### Multi-Asset Strategies
+### 🐇 Vectorized Strategies (Pandas)
+*Located in `src/vectorized_strategies/`*
 | Strategy | Description |
 | :--- | :--- |
-| **PairsTrading** | Statistical Arbitrage strategy identifying cointegrated pairs to trade the spread. |
+| **SMA Strategy** | Fast calculation of SMA crossovers across large datasets. |
+| **EMA Strategy** | Fast calculation of EMA crossovers. |
+| **Mean Reversion** | Bollinger Band-based logic calculated vectorially. |
+| **Donchian Channel** | Breakout logic using rolling max/min calculations. |
 
 ## 🏃 Run the Program
-1. To execute a standard technical analysis strategy:
-```bash
-python3 src/backtest_strategies/run.py [StrategyName]
-```
-Available Strategies:
-* `BuyHold`
-* `EMAGoldenCross`
-* `MACDStrategy`
-* `RSIStrategy`
-* `SMAGoldenCross`
-* `MeanReversion`
-* `Donchain`
+This framework supports two different backtesting engines. Choose the one that fits your needs:
 
-Example
-```bash
-python3 src/backtest_strategies/run.py Donchain
-```
+### 🐢 Option 1: Event-Driven Engine (Backtrader)
+*Best for: Realistic simulations, handling order execution, slippage, and complex logic (e.g., Pairs Trading).*
 
-2. Run Pairs Trading (Statistical Arbitrage)
+**1. Run Standard Strategies (SMA, RSI, Mean Reversion):**
+```bash
+python src/backtest_strategies/run.py [StrategyName]
+```
+Available Strategies: `BuyHold`, `SMAGoldenCross`, `EMAGoldenCross`, `MACDStrategy`, `RSIStrategy`
+
+**2. Run Pairs Trading (Statistical Arbitrage):**
 To execute the cointegration-based pairs trading engine:
 ```bash
 python3 src/backtest_strategies/run_pairs.py
 ```
+
+### 🐇 Option 2: Vectorized Engine (Pandas/NumPy)
+Best for: Rapid prototyping, researching theoretical signals, and analyzing thousands of scenarios in seconds.
+To run the lightweight, fast backtester:
+```bash
+python src/vectorized_strategies/[Strategy file name]
+```
+Available Strategies: `sma_strategy.py`, `mean_reversion.py`, `ema_strategy.py`, `donchain_channel.py`
 
 ## ✅ Testing
 The project includes a test suite to ensure the correctness and reliability of the strategies and core components.
