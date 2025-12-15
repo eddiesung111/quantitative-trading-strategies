@@ -3,7 +3,7 @@ import os
 import argparse
 import backtrader as bt
 import yfinance as yf
-import matplotlib.pyplot as plt # Added for plotting
+import matplotlib.pyplot as plt
 
 from src.backtest_strategies.strategies.buy_hold import BuyHold
 from src.backtest_strategies.strategies.sma_golden_cross import SMAGoldenCross
@@ -68,13 +68,8 @@ def main(argv=None):
     print(f"Total Trades: {total_trades}")
 
     # Plot results
-    try:
-        cerebro.plot()
-    except Exception as e:
-        print(f"Interactive plot failed: {e}. Attempting to save plot to file.")
-        fig = cerebro.plot(style='candlestick')[0][0]
-        fig.savefig('backtest_results.png', dpi=300)
-        print("Plot saved to backtest_results.png")
+    cerebro.plot()
+
 
     return 0
 

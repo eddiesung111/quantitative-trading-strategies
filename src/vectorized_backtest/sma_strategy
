@@ -1,0 +1,32 @@
+import pandas as pd
+if isinstance(df, pd.Series):
+    df = df.to_frame()
+
+# Step 1: Calculate the Moving Averages
+df['SMA_50'] = df['SPY'].rolling(window = 50).mean()
+df['SMA_200'] = df['SPY'].rolling(window = 200).mean()
+
+# Step 2: Create the Signal
+df['Signal'] = np.where(df['SMA_50'] > df['SMA_200'], 1, 0)
+
+df['Position'] = df['Signal'].diff()
+buy_signals = df[df['Position'] == 1]
+sell_signals = df[df['Position'] == -1]
+
+
+# Step 3: Visualize the Trade
+plt.figure(figsize = (10, 6))
+plt.plot(df.index, df['SPY'], label = 'Price', alpha = 0.5)
+plt.plot(df.index, df['SMA_50'], label = "SMA 50", color = 'orange')
+plt.plot(df.index, df['SMA_200'], label = "SMA 200", color = 'blue')
+plt.scatter(buy_signals.index,
+            buy_signals['SPY'],
+            label='Buy Signal',
+            marker='^',
+            color='red',
+            s=50,
+            zorder=5)
+
+plt.legend()
+plt.title('Golden Cross Strategy')
+plt.show()
