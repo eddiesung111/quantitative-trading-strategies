@@ -1,87 +1,145 @@
-# Trading Strategies
+# Trading Strategies Documentation
 
-This document provides a detailed overview of the trading strategies implemented within the `my-backtest-strategies-v2` project. Each strategy is designed as a `backtrader.Strategy` subclass, allowing for modular development and easy integration into the backtesting framework.
+This document provides a detailed overview of the trading strategies implemented within the project. Each strategy is designed as a `backtrader.Strategy` subclass (or vectorized equivalent), allowing for modular development and easy integration into the backtesting framework.
+
+---
 
 ## 1. BuyHold Strategy
+The **BuyHold** strategy serves as a fundamental benchmark. It represents a passive investment approach where an asset is purchased at the beginning of the backtest period and held until the end, regardless of market fluctuations.
 
-The `BuyHold` strategy serves as a fundamental benchmark. It represents a passive investment approach where an asset is purchased at the beginning of the backtest period and held until the end, regardless of market fluctuations.
+### Core Logic
+* **Entry:** Buys the asset on the first available data point.
+* **Exit:** Holds the asset; no active selling is performed. The position is implicitly closed at the end of the backtest.
 
-* **Core Logic:**
-    * **Entry:** Buys the asset on the first available data point.
-    * **Exit:** Holds the asset; no active selling is performed. The position is implicitly closed at the end of the backtest.
-* **Parameters:** None
-* **Assumptions & Considerations:**
-    * This strategy assumes no transaction costs after the initial buy.
-    * It's crucial for evaluating the performance of active strategies; if an active strategy cannot outperform a simple Buy & Hold, it may not be viable.
-    * Does not account for dividends or stock splits beyond what's reflected in the price data.
+### Parameters
+* *None*
 
-## 2. EMA Golden Cross Strategy
+### Assumptions & Considerations
+* **Benchmark:** It is crucial for evaluating the performance of active strategies; if an active strategy cannot outperform a simple Buy & Hold, it may not be viable.
+* **Costs:** Assumes no transaction costs after the initial buy.
+* **Passive:** Does not account for dividends or stock splits beyond what is reflected in the adjusted price data.
 
-The `EMA Golden Cross` strategy is a trend-following strategy that uses two Exponential Moving Averages (EMAs) of different periods to generate trading signals.
+---
 
-* **Core Logic:**
-    * **Entry (Buy Signal):** Generated when the shorter-period Exponential Moving Average (EMA) crosses *above* the longer-period EMA (a 'golden cross'). This indicates a potential bullish trend reversal or continuation.
-    * **Exit (Sell Signal):** Generated when the shorter-period EMA crosses *below* the longer-period EMA (a 'death cross'). This indicates a potential bearish trend reversal or continuation.
-* **Parameters:**
-    * `fast` (integer, default: `5`): The period for the shorter-term Exponential Moving Average.
-    * `slow` (integer, default: `20`): The period for the longer-term Exponential Moving Average.
-* **Assumptions & Considerations:**
-    * **Lagging Indicator:** EMAs are lagging indicators, meaning signals are generated after a trend has already started.
-    * **Whipsaws:** Can generate false signals (whipsaws) in sideways or choppy markets, leading to frequent small losses.
-    * **Trend Strength:** More effective in strong, trending markets.
-    * **Customization:** `fast` and `slow` parameters can be optimized for different assets or timeframes.
+## 2. SMA Golden Cross Strategy
+The **SMA Golden Cross** strategy is a classic trend-following approach that utilizes Simple Moving Averages (SMAs).
 
-## 3. SMA Golden Cross Strategy
+### Core Logic
+* **Entry (Buy Signal):** Generated when the shorter-period SMA crosses **above** the longer-period SMA (Golden Cross). This indicates a potential bullish trend.
+* **Exit (Sell Signal):** Generated when the shorter-period SMA crosses **below** the longer-period SMA (Death Cross). This indicates a potential bearish trend.
 
-Similar to the EMA Golden Cross, the `SMA Golden Cross` strategy is a classic trend-following approach, but it utilizes Simple Moving Averages (SMAs).
+### Parameters
+* `fast` (int, default: 10): The period for the shorter-term SMA.
+* `slow` (int, default: 20): The period for the longer-term SMA.
 
-* **Core Logic:**
-    * **Entry (Buy Signal):** Generated when the shorter-period Simple Moving Average (SMA) crosses *above* the longer-period SMA (often referred to as a "golden cross"). This is a bullish indicator.
-    * **Exit (Sell Signal):** Generated when the shorter-period SMA crosses *below* the longer-period SMA (often referred to as a "death cross"). This is a bearish indicator.
-* **Parameters:**
-    * `fast` (integer, default: `10`): The period for the shorter-term Simple Moving Average.
-    * `slow` (integer, default: `20`): The period for the longer-term Simple Moving Average.
-* **Assumptions & Considerations:**
-    * **Lagging Indicator:** Like EMAs, SMAs are lagging indicators.
-    * **Smoother than EMA:** SMAs give equal weight to all data points in their period, making them smoother but potentially slower to react than EMAs.
-    * **Whipsaws:** Also susceptible to whipsaws in non-trending markets.
-    * **Robustness:** Often used as a foundational trend-following system due to its simplicity and long history.
+### Assumptions & Considerations
+* **Lag:** SMAs are lagging indicators; they react slower than price.
+* **Whipsaws:** Susceptible to false signals in sideways (non-trending) markets.
+* **Robustness:** Often used as a foundational system due to its simplicity.
+
+---
+
+## 3. EMA Golden Cross Strategy
+Similar to the SMA strategy, but utilizes **Exponential Moving Averages (EMAs)**, which place greater weight on recent price data.
+
+### Core Logic
+* **Entry (Buy Signal):** Generated when the shorter-period EMA crosses **above** the longer-period EMA.
+* **Exit (Sell Signal):** Generated when the shorter-period EMA crosses **below** the longer-period EMA.
+
+### Parameters
+* `fast` (int, default: 5): The period for the shorter-term EMA.
+* `slow` (int, default: 20): The period for the longer-term EMA.
+
+### Assumptions & Considerations
+* **Reactivity:** Reacts faster to price changes than SMA, potentially catching trends earlier.
+* **Noise:** The increased sensitivity can lead to more false signals in choppy markets compared to SMA.
+
+---
 
 ## 4. MACD Strategy
+The **MACD Strategy** utilizes the Moving Average Convergence Divergence indicator, a momentum oscillator used to reveal the strength, direction, momentum, and duration of a trend.
 
-The `MACD Strategy` utilizes the Moving Average Convergence Divergence (MACD) indicator, a momentum oscillator used to reveal the strength, direction, momentum, and duration of a trend in a stock's price.
+### Core Logic
+* **MACD Line:** Difference between Fast EMA (12) and Slow EMA (26).
+* **Signal Line:** 9-period EMA of the MACD Line.
+* **Entry (Buy Signal):** Generated when the MACD Line crosses **above** the Signal Line.
+* **Exit (Sell Signal):** Generated when the MACD Line crosses **below** the Signal Line.
 
-* **Core Logic:**
-    * **MACD Line:** The difference between a fast and slow period EMA.
-    * **Signal Line:** An EMA of the MACD Line itself.
-    * **Histogram:** Represents the difference between the MACD Line and the Signal Line.
-    * **Entry (Buy Signal):** Typically generated when the MACD Line crosses *above* the Signal Line. A stronger buy signal often occurs if this crossover happens below the zero line.
-    * **Exit (Sell Signal):** Typically generated when the MACD Line crosses *below* the Signal Line. A stronger sell signal often occurs if this crossover happens above the zero line.
-* **Parameters:**
-    * `fast_period` (integer, default: `12`): The period for the faster EMA.
-    * `slow_period` (integer, default: `26`): The period for the slower EMA.
-    * `signal_period` (integer, default: `9`): The period for the EMA of the MACD line (the signal line).
-* **Assumptions & Considerations:**
-    * **Trend-Following:** Primarily used as a trend-following momentum indicator.
-    * **Divergence:** Can identify potential trend reversals when the price and MACD move in opposite directions (e.g., price makes a higher high, but MACD makes a lower high).
-    * **Lagging:** Still a lagging indicator, can be slow to react to sharp reversals.
-    * **Consolidation:** May generate false signals during sideways or ranging markets.
+### Parameters
+* `fast_period` (int, default: 12)
+* `slow_period` (int, default: 26)
+* `signal_period` (int, default: 9)
+
+### Assumptions & Considerations
+* **Momentum:** primarily used as a trend-following momentum indicator.
+* **Divergence:** Can identify potential reversals when price and MACD diverge.
+
+---
 
 ## 5. RSI Strategy
+The **RSI Strategy** employs the Relative Strength Index (RSI) to identify overbought or oversold conditions.
 
-The `RSI Strategy` employs the Relative Strength Index (RSI), a momentum oscillator that measures the speed and change of price movements. It is primarily used to identify overbought or oversold conditions in an asset.
+### Core Logic
+* **Entry (Buy Signal):** Generated when RSI crosses **below** the *oversold* level (e.g., 30) and then crosses back above it.
+* **Exit (Sell Signal):** Generated when RSI crosses **above** the *overbought* level (e.g., 70) and then crosses back below it.
 
-* **Core Logic:**
-    * **RSI Calculation:** Typically calculated over a 14-period timeframe.
-    * **Overbought/Oversold Levels:** Standard levels are 70 (overbought) and 30 (oversold), but these can be adjusted.
-    * **Entry (Buy Signal):** Generated when the RSI crosses *below* the `oversold` level and then crosses *back above* it, indicating that the asset was oversold and may be due for a rebound.
-    * **Exit (Sell Signal):** Generated when the RSI crosses *above* the `overbought` level and then crosses *back below* it, indicating that the asset was overbought and may be due for a pullback.
-* **Parameters:**
-    * `period` (integer, default: `14`): The number of periods used to calculate the RSI.
-    * `oversold_level` (integer, default: `30`): The RSI value below which an asset is considered oversold.
-    * `overbought_level` (integer, default: `70`): The RSI value above which an asset is considered overbought.
-* **Assumptions & Considerations:**
-    * **Oscillator:** Best used in ranging or consolidating markets, rather than strongly trending ones.
-    * **False Signals in Trends:** Can generate premature signals in strong trends (e.g., an asset can remain overbought for an extended period in a strong uptrend).
-    * **Divergence:** RSI divergence (when RSI moves opposite to price) can be a strong signal for reversals.
-    * **Customization:** Overbought/oversold levels can be adjusted based on asset volatility and market conditions.
+### Parameters
+* `period` (int, default: 14)
+* `oversold_level` (int, default: 30)
+* `overbought_level` (int, default: 70)
+
+### Assumptions & Considerations
+* **Mean Reversion:** Best used in ranging or consolidating markets.
+* **Trend Failure:** Can generate premature exit signals in strong trends (e.g., selling too early in a massive bull run).
+
+---
+
+## 6. Mean Reversion (Bollinger Bands)
+The **Mean Reversion** strategy assumes that prices will tend to revert to the average over time. It typically uses Bollinger Bands to define "expensive" and "cheap" zones.
+
+### Core Logic
+* **Upper Band:** SMA + (Standard Deviation × `devfactor`).
+* **Lower Band:** SMA - (Standard Deviation × `devfactor`).
+* **Entry (Buy Signal):** Price closes **below** the Lower Band (asset is oversold).
+* **Exit (Sell Signal):** Price closes **above** the Upper Band (asset is overbought) or reverts to the Mean (SMA).
+
+### Parameters
+* `period` (int, default: 20): The lookback period for the moving average.
+* `devfactor` (float, default: 2.0): The number of standard deviations for the bands.
+
+---
+
+## 7. Donchian Channel Strategy
+The **Donchian Channel** strategy is a breakout system commonly used by "Turtle Traders." It relies on breaks of the highest high or lowest low over `n` periods.
+
+### Core Logic
+* **Upper Channel:** The highest high of the past `n` periods.
+* **Lower Channel:** The lowest low of the past `n` periods.
+* **Entry (Buy Signal):** Price breaks **above** the Upper Channel (Trend confirmation).
+* **Exit (Sell Signal):** Price breaks **below** the Lower Channel.
+
+### Parameters
+* `period` (int, default: 20): The lookback window for highs/lows.
+
+---
+
+## 8. Pairs Trading (Statistical Arbitrage)
+
+The **Pairs Trading** strategy is a market-neutral approach that identifies two cointegrated assets (e.g., GOOG and GOOGL) and trades the spread between them.
+
+### Core Logic
+1.  **Cointegration Test:** Check if the spread between Asset A and Asset B is stationary.
+2.  **Z-Score Calculation:** Normalize the spread: $Z = \frac{\text{Spread} - \text{Mean}}{\text{StdDev}}$.
+3.  **Entry:**
+    * **Long the Spread:** If $Z < -\text{threshold}$ (Spread is too low).
+    * **Short the Spread:** If $Z > \text{threshold}$ (Spread is too high).
+4.  **Exit:** When the Z-Score reverts to zero (Mean Reversion).
+
+### Parameters
+* `window` (int, default: 30): Rolling window for Z-score calculation.
+* `entry_threshold` (float, default: 2.0): Z-score trigger for entering trades.
+* `exit_threshold` (float, default: 0.0): Z-score trigger for closing trades.
+
+### Assumptions & Considerations
+* **Market Neutral:** Designed to profit regardless of overall market direction.
+* **Breakdown Risk:** The primary risk is that the historical correlation between the two assets breaks down permanently.

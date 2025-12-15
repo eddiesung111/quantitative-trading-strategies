@@ -20,7 +20,6 @@ Designed for quantitative research, allowing for rapid testing of technical sign
 ```
 .
 ├── docs/                               # Comprehensive documentation files
-│   ├── backtrader_setup.md             # Guide to setting up Backtrader environment
 │   └── strategies.md                   # Detailed descriptions of all trading strategies
 ├── src/                                # Source code for strategies and core logic
 │   └── backtest_strategies/
@@ -28,7 +27,6 @@ Designed for quantitative research, allowing for rapid testing of technical sign
 │       │   ├── mean_reversion.py       # Bollinger Band/Z-score strategies
 │       │   ├── donchain.py             # Donchian Channel Breakout
 │       │   └── ... (SMA, EMA, etc.)
-│       ├── pairs_trading.py            # Cointegration-based Pairs Trading logic
 │       ├── run_pairs.py                # Runner for Pairs Trading backtests
 │       ├── __init__.py
 │       ├── __main__.py
@@ -111,10 +109,12 @@ Available Strategies:
 * `SMAGoldenCross`
 * `MeanReversion`
 * `Donchain`
+
 Example
 ```bash
 python3 src/backtest_strategies/run.py Donchain
 ```
+
 2. Run Pairs Trading (Statistical Arbitrage)
 To execute the cointegration-based pairs trading engine:
 ```bash
@@ -130,5 +130,4 @@ pytest
 
 ## 📚 Documentation
 For more in-depth information, please refer to the docs/ directory:
-* [**Backtrader Setup**](https://github.com/eddiesung111/quantitative-trading-strategies/blob/main/docs/backtrader_setup.md): Detailed instructions for setting up your development environment.
 * [**Strategies**](https://github.com/eddiesung111/quantitative-trading-strategies/blob/main/docs/strategies.md): Comprehensive details on each implemented trading strategy.
