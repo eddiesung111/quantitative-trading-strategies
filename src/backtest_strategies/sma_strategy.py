@@ -29,4 +29,4 @@ plt.scatter(buy_signals.index,
 
 plt.legend()
 plt.title('Golden Cross Strategy')
-plt.show()
+plt.show()åß
