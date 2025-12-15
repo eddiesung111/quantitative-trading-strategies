@@ -1,31 +1,24 @@
 import backtrader as bt
 
 class SMAGoldenCross(bt.Strategy):
-    params = (
-        ('fast', 12),
-        ('slow', 26)
-    )
+    params = (('fast', 12), ('slow', 26))
 
     def __init__(self):
-        self.last_day = self.data.datetime.date(-1)
-        self.fast_moving_average = bt.indicators.SMA(
-            self.data.close, period = self.params.fast, plotname = '50 days moving average'
-        )
-        self.slow_moving_average = bt.indicators.SMA(
-            self.data.close, period = self.params.slow, plotname = '200 days moving average'
-        )
-        self.crossover = bt.indicators.CrossOver(self.fast_moving_average, self.slow_moving_average, plot = False)
-    
+        self.fastMA = bt.indicators.SMA(self.data.close, period=self.params.fast)
+        self.slowMA = bt.indicators.SMA(self.data.close, period=self.params.slow)
+        self.crossover = bt.indicators.CrossOver(self.fastMA, self.slowMA)
+
     def next(self):
+        if len(self) == self.data.buflen():
+            self.close()
+            return
+
         if not self.position:
             if self.crossover > 0:
-                self.size = self.broker.cash / self.data.close
-                print("Buy {} shares at {} on {}".format(self.size, self.data.close[0], self.data.datetime.date(0)))
-                self.buy(size = self.size)
-
-        if self.position:
+                cash = self.broker.get_cash() * 0.95
+                size = int(cash / self.data.close[0])
+                self.buy(size=size)
+                
+        elif self.position:
             if self.crossover < 0:
-                print("Sell {} shares at {} on {}".format(self.size, self.data.close[0], self.data.datetime.date(0)))
                 self.close()
-        if self.position and self.last_day == self.data.datetime.date(0):
-            self.close()
