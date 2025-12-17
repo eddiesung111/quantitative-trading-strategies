@@ -12,8 +12,7 @@ Designed for quantitative research, allowing for rapid testing of technical sign
 
 * **Event-Driven Architecture:** Simulates realistic execution with `DataHandler`, `Strategy`, and `Portfolio` classes.
 * **Vectorized Indicators:** Optimized SMA, EMA, MACD, and RSI calculations using Pandas/Numpy.
-* **Risk Management:** Built-in calculation of **Value at Risk (VaR)**, Sharpe Ratio, and Maximum Drawdown.
-* **Realistic Execution:** Execution handler simulates slippage and commission costs (0.1% default).
+* **Risk Management:** Built-in calculation of Sharpe Ratio, and Maximum Drawdown.
 * **CI/CD Integration:** GitHub Actions enabled for automated testing.
 
 ## 📂 Project Structure
@@ -31,20 +30,12 @@ Designed for quantitative research, allowing for rapid testing of technical sign
 │       ├── sma_strategy.py             # Strategies (included sma, ema, mean_reversion, donchain channel)
 │       └── ...
 ├── tests/                              # Unit and integration tests
+├── results/                            # Visualizations
 ├── .gitignore                       
 ├── LICENSE
 ├── README.md          
 └── requirements.txt
 ```
-
-## 🚀 Getting Started
-
-Follow these steps to set up the project and run your first backtest.
-
-### Prerequisites
-
-* **Python:** Recommended versions are **Python 3.10, 3.11, or 3.12**. While Python 3.13 may be used, `backtrader` and its dependencies might exhibit compatibility issues.
-* **Git:** For cloning the repository.
 
 ### Installation
 
@@ -68,8 +59,6 @@ source .venv/bin/activate
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 ```
-
-You will know the virtual environment is active when your terminal prompt changes to include (.venv) (or similar) at the beginning.
 
 3.  **Install project dependencies:**
 ```bash
@@ -124,6 +113,32 @@ To run the lightweight, fast backtester:
 python src/vectorized_strategies/[Strategy file name]
 ```
 Available Strategies: `sma_strategy.py`, `mean_reversion.py`, `ema_strategy.py`, `donchain_channel.py`
+
+#### Results
+1. Donchain Channel Strategy
+
+Example output:
+```text
+--- RESULTS: ETH-USD ---
+Total Trades: 38
+Sharpe Ratio: 0.01
+Max Drawdown: -47.71%
+Strategy Return: -10.74%
+```
+Visualizes the Cumulative Return and Price Movement (including signals).
+![Visualization](results/donchian_channel_strategy.png)
+
+2. Mean Reversion Strategy
+
+Example output:
+```text
+--- ADAPTIVE STRATEGY RESULTS ---
+Total Trades:    16
+Sharpe Ratio:    0.21
+Max Drawdown:    -24.12%
+Strategy Return: 3.45%
+```
+![Visualization](results/mean_reversion_strategy.png)
 
 ## ✅ Testing
 The project includes a test suite to ensure the correctness and reliability of the strategies and core components.
