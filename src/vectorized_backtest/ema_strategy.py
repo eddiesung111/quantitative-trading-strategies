@@ -3,8 +3,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-def trend_following_strategy():
-    ticker = "ADA-USD"
+def ema_strategy():
+    ticker = "ETH-USD"
     print(f"Downloading {ticker} data......")
 
     data = yf.download(ticker, start="2023-01-01", end="2025-01-01")['Close']
@@ -40,39 +40,44 @@ def trend_following_strategy():
     max_drawdown = (data['cumulative_return'] / data['cumulative_return'].cummax() - 1).min()
 
     print(f"---- Metric Results of {ticker} ----")
-    print(f"Strategy Return: {total_return:.2%}")
     print(f"Total Trades:    {int(trades)}")
     print(f"Sharpe Ratio:    {sharpe_ratio:.2f}")
     print(f"Max Drawdown:    {max_drawdown:.2%}")
+    print(f"Strategy Return: {total_return:.2%}")
+    
 
     # 7. PLOTTING
-    fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(12, 8))
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8), sharex=True,
+                                   gridspec_kw={'height_ratios': [3, 1]})
 
     # Plot Price & EMAs
-    ax1.plot(data.index, data['Close'], label="Price", color='black', alpha=0.3)
-    ax1.plot(data.index, data['fast_ema'], label='Fast EMA (20)', color="blue", alpha=0.6)
-    ax1.plot(data.index, data['slow_ema'], label='Slow EMA (50)', color="orange", alpha=0.6)
+    ax1.plot(data.index, data['Close'], label="Price", color='black', alpha=0.5, lw = 1)
+    ax1.plot(data.index, data['fast_ema'], label='Fast EMA (20)', color="blue", alpha=0.3, linestyle='--')
+    ax1.plot(data.index, data['slow_ema'], label='Slow EMA (50)', color="orange", alpha=0.3, linestyle='--')
 
     # Plot Scatter Markers
-    # Green Up Triangle for Buys
     ax1.scatter(buys.index, buys['Close'], marker='^', color='green', s=150, label='Buy Signal', zorder=5)
-    # Red Down Triangle for Sells
     ax1.scatter(sells.index, sells['Close'], marker='v', color='red', s=150, label='Sell Signal', zorder=5)
 
-    # FIX: Removed int() conversion for ticker
-    ax1.set_title(f'Trend Following: Entries & Exits on {ticker}')
+    ax1.set_title(f'SMA Strategy: Entries & Exits on {ticker}')
     ax1.set_yscale('log')
-    ax1.legend()
-    ax1.grid(True)
+    ax1.legend(loc='upper left')
+    ax1.grid(True, which='both', alpha=0.3)
 
     # Plot Returns
-    # FIX: Changed 'cum_strategy' to 'cumulative_return'
-    ax2.plot(data.index, data['cumulative_return'], label='Trend Strategy', color='green', linewidth=2)
+    ax2.plot(data.index, data['cumulative_return'], label='Trend Strategy', color='blue', lw=2)
+    ax2.plot(data.index, (1 + data['market_return']).cumprod(), label='Buy & Hold', color='gray', alpha=0.5, linestyle=':')
     ax2.set_title(f'Cumulative Returns on {ticker}')
+
+    ax2.set_ylabel('Equity')
+    ax2.legend()
     ax2.grid(True)
 
     plt.tight_layout()
+    file_name = "results/ema_strategy.png"
+    plt.savefig(file_name)
+    print(f"Figure saved as {file_name}")
     plt.show()
 
 if __name__ == "__main__":
-    trend_following_strategy()
+    ema_strategy()

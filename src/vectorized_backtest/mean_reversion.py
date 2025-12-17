@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from statsmodels.regression.rolling import RollingOLS
 import statsmodels.api as sm
+import warnings
+warnings.filterwarnings("ignore")
 
 def vectorized_backtest():
     tickers = ['XOM', 'CVX']
@@ -45,23 +47,30 @@ def vectorized_backtest():
 
     total_return = data['cumulative_returns'][-1] - 1
     sharpe_ratio = data['strategy_returns'].mean() / data['strategy_returns'].std() * np.sqrt(252)
+    trades = data['signal'].diff().abs().sum()
+    max_drawdown = (data['cumulative_returns'] / data['cumulative_returns'].cummax() - 1).min()
 
     print(f"--- ADAPTIVE STRATEGY RESULTS ---")
-    print(f"Total Return: {total_return:.2%}")
-    print(f"Sharpe Ratio: {sharpe_ratio:.2f}")
+    print(f"Total Trades:    {int(trades)}")
+    print(f"Sharpe Ratio:    {sharpe_ratio:.2f}")
+    print(f"Max Drawdown:    {max_drawdown:.2%}")
+    print(f"Strategy Return: {total_return:.2%}")
 
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize = (12, 8))
-    ax1.plot(data.index, data['cumulative_returns'], label = 'Adaptive Strategy', color = 'green')
+
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize = (12, 8), gridspec_kw={'height_ratios': [3, 1]})
+    ax1.plot(data.index, data['cumulative_returns'], label = 'Adaptive Strategy', color = 'blue', lw = 1.5, alpha = 0.7)
     ax1.set_title('Cumulative Returns (Dynamic Beta)')
     ax1.grid(True)
 
-    ax2.plot(data.index, data['beta'], label='Rolling Beta (Hedge Ratio)', color='orange')
+    ax2.plot(data.index, data['beta'], label='Rolling Beta (Hedge Ratio)', color='orange', lw = 1, alpha = 0.7)
     ax2.set_title('Rolling Beta (Hedge Ratio)')
     ax2.grid(True)
 
     plt.tight_layout()
+    file_name = "results/mean_reversion_strategy.png"
+    plt.savefig(file_name)
+    print(f"Figure saved as {file_name}")
     plt.show()
-    return
 
 if __name__ == "__main__":
     vectorized_backtest()

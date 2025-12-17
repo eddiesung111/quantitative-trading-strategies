@@ -8,13 +8,11 @@ class RSIStrategy(bt.Strategy):
     )
 
     def __init__(self):
-        # Use the built-in Safe RSI if available, otherwise standard
         self.rsi = bt.indicators.RSI_Safe(self.data.close, period=self.params.rsi_period)
 
     def next(self):
         if not self.position:
             if self.rsi[0] < self.params.rsi_oversold:
-                # Use 95% of cash for safety
                 size = int((self.broker.get_cash() * 0.95) / self.data.close[0])
                 if size > 0:
                     self.buy(size=size)

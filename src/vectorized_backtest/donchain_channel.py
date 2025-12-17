@@ -4,11 +4,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def don_channel():
-
-    ticker = "RIOT"
+    ticker = "ETH-USD"
     print(f"Downloading {ticker} data...")
 
-    data = yf.download(ticker, start="2022-01-01", end="2024-01-01")['Close']
+    data = yf.download(ticker, start="2023-01-01", end="2025-01-01")['Close']
 
 
     if isinstance(data, pd.Series):
@@ -51,7 +50,7 @@ def don_channel():
     print(f"Total Trades: {int(total_trades)}")
     print(f"Sharpe Ratio: {sharpe_ratio:.2f}")
     print(f"Max Drawdown: {max_dd:.2%}")
-    print(f"Final Return: {(data['Cumulative_Return'].iloc[-1] - 1):.2%}")
+    print(f"Strategy Return: {(data['Cumulative_Return'].iloc[-1] - 1):.2%}")
 
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8), sharex=True,
                                    gridspec_kw={'height_ratios': [3, 1]})
@@ -77,6 +76,9 @@ def don_channel():
     ax2.grid(True)
 
     plt.tight_layout()
+    file_name = "results/donchian_channel_strategy.png"
+    plt.savefig(file_name)
+    print(f"Figure saved as {file_name}")
     plt.show()
 
 if __name__ == "__main__":
