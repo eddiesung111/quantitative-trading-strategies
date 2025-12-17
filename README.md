@@ -114,10 +114,9 @@ python src/vectorized_strategies/[Strategy file name]
 ```
 Available Strategies: `sma_strategy.py`, `mean_reversion.py`, `ema_strategy.py`, `donchain_channel.py`
 
-#### Results
-1. Donchain Channel Strategy
+**1. Donchain Channel Strategy**
 
-Example output:
+Sample output:
 ```text
 --- RESULTS: ETH-USD ---
 Total Trades: 38
@@ -128,9 +127,9 @@ Strategy Return: -10.74%
 Visualizes the Cumulative Return and Price Movement (including signals).
 ![Visualization](results/donchian_channel_strategy.png)
 
-2. Mean Reversion Strategy
+**2. Mean Reversion Strategy**
 
-Example output:
+Sample output:
 ```text
 --- ADAPTIVE STRATEGY RESULTS ---
 Total Trades:    16
